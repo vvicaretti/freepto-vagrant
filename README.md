@@ -1,8 +1,6 @@
 freepto-vagrant
 ===============
 
-freepto vagrantfile:
-
 vagrant box: http://dev.freepto.mx/vagrant/freepto.box
 
 packages included:
