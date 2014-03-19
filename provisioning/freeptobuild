@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+if [ -r /home/vagrant/freeptobuild.cfg ]; then
+    source /home/vagrant/freeptobuild.cfg
+else:
+    share=/vagrant
+    proxy=false
+fi
+
+BASEDIR=${1%/} #strip slash
+LOCALE=${2:-it_IT.UTF-8}
+TIMEZONE=${3:-Europe/Rome}
+KEYMAP=${4:-it}
+VARIANT=${5:-${LOCALE}}
+DATEFMT='%F_%H.%M'
+if [[ "$proxy" == true ]] ; then
+    export $http_proxy
+fi
+HEAD=""
+imgname=""
+
+# TODO: add better help
+if [[ $# -lt 1 ]]; then
+	echo "you must fill config\n $0 path locale timezone keymap"
+	exit 1
+fi
+if ! [[ -d $1/.git ]]; then
+	echo "repository does not exist, create it manually"
+	exit 1
+fi
+cd $BASEDIR
+
+test -d $BASEDIR || exit 1
+
+export GIT_WORK_TREE=$BASEDIR
+export GIT_DIR=$GIT_WORK_TREE/.git
+
+HEAD=$(git rev-parse HEAD | head -c 6)
+builddate=$(date +$DATEFMT)
+commitdesc=$(git describe --tags --long)
+imgdesc="${builddate}_$commitdesc-$VARIANT"
+imgname="${share%/}/$(basename $BASEDIR)/${imgdesc}/${imgdesc}.img"
+mkdir -p "${share%/}/$(basename $BASEDIR)/${imgdesc}"
+echo "Target name will be $imgname"
+
+if [[ -n "$(find ${share%/}/ -name "*_$HEAD-$VARIANT.img" -print -quit)" ]]; then
+	echo "an image for $HEAD already exists: "
+	ls -l ${share%/}/*_$HEAD-$VARIANT.img
+	exit 1
+else
+	echo "ok, building $HEAD"
+fi
+
+set -e
+
+mkdir -p ${share}/build
+avail_mega=$(df -BM ${share}/build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
+if [ "$avail_mega" -lt 5000 ]; then
+	echo "Too few disk space: $avail_mega MB, aborting" >&2
+	exit 5
+fi
+workdir=$(mktemp -d ${share}/build/build_$(basename $BASEDIR).XXXXX)
+rsync -r --links --exclude=.git $BASEDIR/ $workdir/
+
+cleanup()
+{
+	troubledir="/var/build/trouble"
+	mkdir -p "$troubledir"
+	if [ -d "$workdir" ]
+	then
+		echo "Something unexpected happened; you can find everything in $troubledir "
+		mv $workdir "$troubledir"
+		echo "Debug build in $troubledir/$(basename $workdir)"
+	fi
+}
+trap cleanup EXIT
+
+cd $workdir/
+echo -n "sono in "
+pwd
+
+lb clean
+
+mkdir -p /var/log/build
+if ! ./freepto-config.sh -l $LOCALE -z $TIMEZONE -k $KEYMAP 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
+	echo "errori nel config"
+	cd ~
+	#rm -rf $workdir
+	exit 2
+fi
+
+if ! lb build 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
+	echo "errori nel build"
+	cd ~
+	#rm -rf $workdir
+	exit 3
+fi
+
+if ! [ -f binary.img ];
+then
+	echo "binary not found"
+	cd ~
+	exit 4
+fi
+
+
+mv binary.img $imgname
+mv build.log ${imgname}.log.txt
+mv binary.contents ${imgname}.contents.txt
+mv chroot.packages.live ${imgname}.packages.txt
+sha512sum ${imgname} > ${imgname}.sha512sum.txt
+git log -n 20 --decorate=short --stat > ${imgname}.history.txt
+
+cd ~
+rm -rf $workdir
+
+# remove old image on /vagrant and /var/tmp/build/build*
+find $share/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
+find /var/tmp/build/build* -type f -mtime +1 -delete
+
+
+# vim: set ft=sh:
