@@ -5,37 +5,10 @@ Easy way for create a Freepto development environment
 
 ++ Packages included:
 
-debian-keyring
-debian-archive-keyring
-build-essential
-git
-openssh-server
-live-build
-live-config
-live-tools
-apt-cacher-ng
-zsh
-debootstrap
-devscripts
-equivs
-psmisc
-psutils
-vim
-less
-most
-screen
-lsof
-htop
-strace
-ltrace
-iotop
-tig
-live-boot-doc
-live-config-doc
-live-debconfig-doc
-live-manual-txt
-nethogs
-dnsutils
+debian-keyring debian-archive-keyring build-essential git openssh-server 
+live-build live-config live-tools apt-cacher-ng zsh debootstrap devscripts 
+equivs psmisc psutils vim less most screen lsof htop strace ltrace iotop tig
+live-boot-doc live-config-doc live-debconfig-doc live-manual-txt nethogs dnsutils
 
 ++ Usage:
 
@@ -46,3 +19,9 @@ dnsutils
 <code>$ vagrant up</code>
 
 <code>$ vagrant ssh</code>
+
+<code>$ sudo freeptobuild /home/vagrant/freepto-lb</code>
+
+++ Freeptobuild:
+
+Freeptobuild is a simple wrapper for the debian live build script.

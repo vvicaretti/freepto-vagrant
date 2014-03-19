@@ -13,11 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if [ -r /home/vagrant/freeptobuild.cfg ]; then
-    source /home/vagrant/freeptobuild.cfg
-else:
-    share=/vagrant
-    proxy=false
+if [ "$(id -u)" != "0" ]; then
+    echo "Only root can do that!"
+fi
+
+if [ -r /etc/freeptobuild.cfg ]; then
+    config="/etc/freeptobuild.cfg"
+    source $config
+else
+    share="/vagrant"
+    http_proxy=""
 fi
 
 BASEDIR=${1%/} #strip slash
@@ -26,19 +31,18 @@ TIMEZONE=${3:-Europe/Rome}
 KEYMAP=${4:-it}
 VARIANT=${5:-${LOCALE}}
 DATEFMT='%F_%H.%M'
-if [[ "$proxy" == true ]] ; then
+if [[ ! -z "$http_proxy" ]] ; then
     export $http_proxy
 fi
 HEAD=""
 imgname=""
 
-# TODO: add better help
 if [[ $# -lt 1 ]]; then
-	echo "you must fill config\n $0 path locale timezone keymap"
+	echo "You must fill config\n $0 path locale timezone keymap"
 	exit 1
 fi
 if ! [[ -d $1/.git ]]; then
-	echo "repository does not exist, create it manually"
+	echo "Repository does not exist, create it manually"
 	exit 1
 fi
 cd $BASEDIR
@@ -66,13 +70,13 @@ fi
 
 set -e
 
-mkdir -p ${share}/build
-avail_mega=$(df -BM ${share}/build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
+mkdir -p /build
+avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
 if [ "$avail_mega" -lt 5000 ]; then
 	echo "Too few disk space: $avail_mega MB, aborting" >&2
 	exit 5
 fi
-workdir=$(mktemp -d ${share}/build/build_$(basename $BASEDIR).XXXXX)
+workdir=$(mktemp -d /build/build_$(basename $BASEDIR).XXXXX)
 rsync -r --links --exclude=.git $BASEDIR/ $workdir/
 
 cleanup()
@@ -89,8 +93,6 @@ cleanup()
 trap cleanup EXIT
 
 cd $workdir/
-echo -n "sono in "
-pwd
 
 lb clean
 
@@ -98,14 +100,12 @@ mkdir -p /var/log/build
 if ! ./freepto-config.sh -l $LOCALE -z $TIMEZONE -k $KEYMAP 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
 	echo "errori nel config"
 	cd ~
-	#rm -rf $workdir
 	exit 2
 fi
 
 if ! lb build 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
 	echo "errori nel build"
 	cd ~
-	#rm -rf $workdir
 	exit 3
 fi
 
@@ -125,11 +125,12 @@ sha512sum ${imgname} > ${imgname}.sha512sum.txt
 git log -n 20 --decorate=short --stat > ${imgname}.history.txt
 
 cd ~
-rm -rf $workdir
+
+#TODO:
+#rm -rf $workdir
 
 # remove old image on /vagrant and /var/tmp/build/build*
 find $share/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
-find /var/tmp/build/build* -type f -mtime +1 -delete
-
+find /build/build* -type f -mtime +1 -delete
 
 # vim: set ft=sh:

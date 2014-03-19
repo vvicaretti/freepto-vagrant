@@ -1,0 +1,19 @@
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _list _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' file-sort modification
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' ignore-parents parent pwd directory
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' list-suffixes true
+zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' menu select=1
+zstyle ':completion:*' prompt 'Correcting %e'
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' verbose true
+
+export EDITOR=vim
+export GREP_OPTIONS="--color=auto"
+
+alias ll='ls -lh'
