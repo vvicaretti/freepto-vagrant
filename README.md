@@ -3,7 +3,7 @@ freepto-vagrant
 
 vagrant box: http://dev.freepto.mx/vagrant/freepto.box
 
-packages included:
+++ Packages included:
 
 debian-keyring
 debian-archive-keyring
@@ -36,3 +36,13 @@ live-debconfig-doc
 live-manual-txt
 nethogs
 dnsutils
+
+++ Usage:
+
+<code>$ git clone https://github.com/vinc3nt/freepto-vagrant.git</code>
+
+<code>$ cd freepto-vagrant</code>
+
+<code>$ vagrant up</code>
+
+<code>$ vagrant ssh</code>
