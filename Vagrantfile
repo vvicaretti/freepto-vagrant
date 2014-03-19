@@ -20,11 +20,11 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "freepto"
   config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto.box"
-  #
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = false
 
-  config.vm.provision "shell",
-    inline: "sudo /vagrant/provisioning/setup.sh"
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.gui = false
   end
+ config.vm.provision "shell", path: "provisioning/setup.sh"
 end
