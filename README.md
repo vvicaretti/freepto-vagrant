@@ -1,7 +1,7 @@
 freepto-vagrant
 ===============
 
-vagrant box: http://dev.freepto.mx/vagrant/freepto.box
+Easy way for create a Freepto development environment
 
 ++ Packages included:
 
