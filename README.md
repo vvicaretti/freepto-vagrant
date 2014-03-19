@@ -1,0 +1,4 @@
+freepto-vagrant
+===============
+
+freepto vagrantfile
