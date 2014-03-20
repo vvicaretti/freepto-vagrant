@@ -2,7 +2,7 @@
 
 echo "[Freepto] installing freepto build tool"
 install -o root -g root -m 744 /vagrant/provisioning/freeptobuild /usr/local/bin/freeptobuild
-install -o vagrant -g vagrant -m 644 /vagrant/provisioning/freeptobuild.cfg /etc/freeptobuild.cfg
+install -o root -g root -m 644 /vagrant/provisioning/freeptobuild.cfg /etc/freeptobuild.cfg
 
 echo "[Freepto] installing configuration file"
 install -o root -g root -m 644 /vagrant/provisioning/gitconfig /etc/gitconfig
