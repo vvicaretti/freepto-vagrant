@@ -1,1 +1,3 @@
 .vagrant
+bento/packer_cache
+*.box
