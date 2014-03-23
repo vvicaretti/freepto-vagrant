@@ -13,10 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+usable_ram() {
+    free -m | awk '/cache:/ { print $4 }'
+}
+
 if [ "$(id -u)" != "0" ]; then
     echo "Only root can do that!"
 fi
 
+# load configuration file
 if [ -r /etc/freeptobuild.cfg ]; then
     config="/etc/freeptobuild.cfg"
     source $config
@@ -24,6 +29,23 @@ else
     share="/vagrant"
     http_proxy=""
 fi
+
+# setting build type
+if [ "$RAM_BUILD" == "yes" ]; then
+    # check ram available
+    if [ "$(usable_ram)" -lt "$TMPFS_SIZE" ]; then
+        echo "Not enough RAM for create a tmpfs workdir. Forcing building on disk"
+        BUILD_TYPE="disk"
+    else
+        BUILD_TYPE="ram"
+    fi
+elif [ "$RAM_BUILD" == "no"]; then
+    BUILD_TYPE="disk"
+else
+    # set disk as a default build type
+    BUILD_TYPE="disk"
+fi
+
 
 BASEDIR=${1%/} #strip slash
 LOCALE=${2:-it_IT.UTF-8}
@@ -45,8 +67,8 @@ if ! [[ -d $1/.git ]]; then
 	echo "Repository does not exist, create it manually"
 	exit 1
 fi
-cd $BASEDIR
 
+cd $BASEDIR
 test -d $BASEDIR || exit 1
 
 export GIT_WORK_TREE=$BASEDIR
@@ -57,6 +79,7 @@ builddate=$(date +$DATEFMT)
 commitdesc=$(git describe --tags --long)
 imgdesc="${builddate}_$commitdesc-$VARIANT"
 imgname="${share%/}/$(basename $BASEDIR)/${imgdesc}/${imgdesc}.img"
+
 mkdir -p "${share%/}/$(basename $BASEDIR)/${imgdesc}"
 echo "Target name will be $imgname"
 
@@ -70,15 +93,25 @@ fi
 
 set -e
 
-mkdir -p /build
-avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
-if [ "$avail_mega" -lt 5000 ]; then
-	echo "Too few disk space: $avail_mega MB, aborting" >&2
-	exit 5
+### create workdir related with build type
+
+if [ "$BUILD_TYPE" == "ram" ]; then
+    workdir=$(mktemp -d /tmp/build_$(basename $BASEDIR).XXXXX)
+    mount -t tmpfs -o "noatime,size=${TMPFS_SIZE}",mode=0770 tmpfs "$workdir"
+else
+    avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
+    if [ "$avail_mega" -lt 5000 ]; then
+        echo "Too few disk space: $avail_mega MB, aborting" >&2
+        exit 5
+    fi
+    mkdir -p /build
+    workdir=$(mktemp -d /build/build_$(basename $BASEDIR).XXXXX)
 fi
-workdir=$(mktemp -d /build/build_$(basename $BASEDIR).XXXXX)
+
+### clone freepto repository in $workdir
 rsync -r --links --exclude=.git $BASEDIR/ $workdir/
 
+### define cleanup function
 cleanup()
 {
 	troubledir="/var/build/trouble"
@@ -92,19 +125,20 @@ cleanup()
 }
 trap cleanup EXIT
 
-cd $workdir/
+### {{{ LIVE-BUILD SECTION
 
+cd $workdir/
 lb clean
 
-mkdir -p /var/log/build
-if ! ./freepto-config.sh -l $LOCALE -z $TIMEZONE -k $KEYMAP 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
-	echo "errori nel config"
+mkdir -p /var/log/freeptobuild
+if ! ./freepto-config.sh -l $LOCALE -z $TIMEZONE -k $KEYMAP 2>&1 | tee -a /var/log/freeptobuild/$(basename $BASEDIR).log; then
+	echo "configuration error"
 	cd ~
 	exit 2
 fi
 
-if ! lb build 2>&1 | tee -a /var/log/build/$(basename $BASEDIR).log; then
-	echo "errori nel build"
+if ! lb build 2>&1 | tee -a /var/log/freeptobuild/$(basename $BASEDIR).log; then
+	echo "build error"
 	cd ~
 	exit 3
 fi
@@ -116,6 +150,7 @@ then
 	exit 4
 fi
 
+### }}}
 
 mv binary.img $imgname
 mv build.log ${imgname}.log.txt
@@ -126,11 +161,10 @@ git log -n 20 --decorate=short --stat > ${imgname}.history.txt
 
 cd ~
 
-#TODO:
-#rm -rf $workdir
 
-# remove old image on /vagrant and /var/tmp/build/build*
-find $share/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
-find /build/build* -type f -mtime +1 -delete
+# remove old image on $share and remove $workdir directory:
+find ${share}/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
+#find ${workdir}/build* -type f -mtime +1 -delete
+rm -rf $workdir
 
 # vim: set ft=sh:
