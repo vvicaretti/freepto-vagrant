@@ -13,4 +13,4 @@ echo "Done."
 echo ""
 echo "[Freepto] cloning AvANa git repository..."
 git clone https://github.com/AvANa-BBS/freepto-lb /home/vagrant/freepto-lb
-echo ""
+echo "Done."

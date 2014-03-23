@@ -1,16 +1,14 @@
-freepto-vagrant
+Freepto-vagrant
 ===============
 
 Easy way for create a Freepto development environment
 
-++ Packages included:
 
-debian-keyring debian-archive-keyring build-essential git openssh-server 
-live-build live-config live-tools apt-cacher-ng zsh debootstrap devscripts 
-equivs psmisc psutils vim less most screen lsof htop strace ltrace iotop tig
-live-boot-doc live-config-doc live-debconfig-doc live-manual-txt nethogs dnsutils
+## Usage
 
-++ Usage:
+#### Vagrant setup:
+
+<code>$ sudo apt-get install vagrant git</code>
 
 <code>$ git clone https://github.com/vinc3nt/freepto-vagrant.git</code>
 
@@ -20,8 +18,31 @@ live-boot-doc live-config-doc live-debconfig-doc live-manual-txt nethogs dnsutil
 
 <code>$ vagrant ssh</code>
 
+
+#### Build Freepto:
+
+<code>$ sudo vim /etc/freeptobuild.cfg</code>
+
 <code>$ sudo freeptobuild /home/vagrant/freepto-lb</code>
 
-++ Freeptobuild:
 
-Freeptobuild is a simple wrapper for the debian live build script.
+#### Build from another repository:
+
+<code>$ git clone https://github.com/vinc3nt/freepto-lb.git freepto-lb_vinc3nt</code>
+
+<code>$ sudo freeptobuild /home/vagrant/freepto-lb_vinc3nt</code>
+
+
+## Creating a new custom freepto.box
+
+A freepto.box is already available from http://dev.freepto.mx/vagrant/ but if you want create a custom base box, you should follow these steps:
+
+1. install packer: http://www.packer.io
+
+2. customize provisioning scripts
+
+3. build a new freepto.box
+
+<code>$ cd bento</code>
+
+<code>$ packer build freepto.json</code>

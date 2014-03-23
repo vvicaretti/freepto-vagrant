@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -22,8 +23,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto.box"
 
   config.vm.provider "virtualbox" do |vb|
+    # if BUILD_TYPE is ram, you should be set the ram size
+    # to 6656 (1024 * 6 + 512)
+    # vb.customize ["modifyvm", :id, "--memory", "6656"]
     vb.customize ["modifyvm", :id, "--memory", "2048"]
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--cpus", "1"]
     vb.gui = false
   end
  config.vm.provision "shell", path: "provisioning/setup.sh"

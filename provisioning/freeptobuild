@@ -26,8 +26,13 @@ if [ -r /etc/freeptobuild.cfg ]; then
     config="/etc/freeptobuild.cfg"
     source $config
 else
-    share="/vagrant"
-    http_proxy=""
+    SHARE="/vagrant"
+    HTTP_PROXY=""
+fi
+
+# apt-cacher-ng
+if [ ! -z "$HTTP_PROXY" ];
+    export $HTTP_PROXY
 fi
 
 # setting build type
@@ -39,7 +44,7 @@ if [ "$RAM_BUILD" == "yes" ]; then
     else
         BUILD_TYPE="ram"
     fi
-elif [ "$RAM_BUILD" == "no"]; then
+elif [ "$RAM_BUILD" == "no" ]; then
     BUILD_TYPE="disk"
 else
     # set disk as a default build type
@@ -78,14 +83,14 @@ HEAD=$(git rev-parse HEAD | head -c 6)
 builddate=$(date +$DATEFMT)
 commitdesc=$(git describe --tags --long)
 imgdesc="${builddate}_$commitdesc-$VARIANT"
-imgname="${share%/}/$(basename $BASEDIR)/${imgdesc}/${imgdesc}.img"
+imgname="${SHARE%/}/$(basename $BASEDIR)/${imgdesc}/${imgdesc}.img"
 
-mkdir -p "${share%/}/$(basename $BASEDIR)/${imgdesc}"
+mkdir -p "${SHARE%/}/$(basename $BASEDIR)/${imgdesc}"
 echo "Target name will be $imgname"
 
-if [[ -n "$(find ${share%/}/ -name "*_$HEAD-$VARIANT.img" -print -quit)" ]]; then
+if [[ -n "$(find ${SHARE%/}/ -name "*_$HEAD-$VARIANT.img" -print -quit)" ]]; then
 	echo "an image for $HEAD already exists: "
-	ls -l ${share%/}/*_$HEAD-$VARIANT.img
+	ls -l ${SHARE%/}/*_$HEAD-$VARIANT.img
 	exit 1
 else
 	echo "ok, building $HEAD"
@@ -152,7 +157,7 @@ fi
 
 ### }}}
 
-mv binary.img $imgname
+mv binary.img ${imgname}
 mv build.log ${imgname}.log.txt
 mv binary.contents ${imgname}.contents.txt
 mv chroot.packages.live ${imgname}.packages.txt
@@ -162,8 +167,8 @@ git log -n 20 --decorate=short --stat > ${imgname}.history.txt
 cd ~
 
 
-# remove old image on $share and remove $workdir directory:
-find ${share}/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
+# remove old image on $SHARE and remove $workdir directory:
+find ${SHARE}/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
 #find ${workdir}/build* -type f -mtime +1 -delete
 rm -rf $workdir
 
