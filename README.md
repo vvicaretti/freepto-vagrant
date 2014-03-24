@@ -8,7 +8,7 @@ Easy way for create a Freepto development environment
 
 #### Vagrant setup:
 
-<code>$ sudo apt-get install vagrant git</code>
+<code>$ sudo apt-get install vagrant git virtualbox</code>
 
 <code>$ git clone https://github.com/vinc3nt/freepto-vagrant.git</code>
 
@@ -32,6 +32,14 @@ Easy way for create a Freepto development environment
 
 <code>$ sudo freeptobuild /home/vagrant/freepto-lb_vinc3nt</code>
 
+
+#### Add libvirt support:
+
+<code>$ sudo apt-get install libxslt-dev libxml2-dev libvirt-dev</code>
+
+<code>$ vagrant plugin install vagrant-libvirt</code>
+
+<code>$ vagrant up --provider=libvirt</code>
 
 ## Creating a new custom freepto.box
 
