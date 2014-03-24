@@ -1,6 +1,5 @@
 {
   "variables": {
-    "chef_version": "provisionerless",
     "mirror": "http://cdimage.debian.org/debian-cd"
   },
   "builders": [
@@ -16,7 +15,7 @@
         "kbd-chooser/method=us <wait>",
         "keyboard-configuration/xkb-keymap=us <wait>",
         "netcfg/get_hostname={{ .Name }} <wait>",
-        "netcfg/get_domain=vagrantup.com <wait>",
+        "netcfg/get_domain=freepto.mx <wait>",
         "fb=false <wait>",
         "debconf/frontend=noninteractive <wait>",
         "console-setup/ask_detect=false <wait>",
@@ -37,7 +36,7 @@
       "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
-      "vm_name": "packer-debian-7.4-amd64",
+      "vm_name": "freepto-dev",
       "output_directory": "packer-debian-7.4-amd64-virtualbox",
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "384" ],
@@ -59,6 +58,8 @@
         "scripts/common/sshd.sh",
         "scripts/debian/networking.sh",
         "scripts/debian/sudoers.sh",
+        "scripts/common/vagrant.sh",
+        "scripts/common/vmtools.sh",
         "scripts/debian/freeptodevs-tools.sh",
         "scripts/debian/cleanup.sh",
         "scripts/common/minimize.sh"

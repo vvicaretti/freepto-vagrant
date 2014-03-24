@@ -43,6 +43,6 @@ A freepto.box is already available from http://dev.freepto.mx/vagrant/ but if yo
 
 3. build a new freepto.box
 
-<code>$ cd bento</code>
+<code>$ cd packer</code>
 
 <code>$ packer build freepto.json</code>
