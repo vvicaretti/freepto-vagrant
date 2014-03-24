@@ -27,12 +27,12 @@ if [ -r /etc/freeptobuild.cfg ]; then
     source $config
 else
     SHARE="/vagrant"
-    HTTP_PROXY=""
+    PROXY=""
 fi
 
 # apt-cacher-ng
-if [ ! -z "$HTTP_PROXY" ];
-    export $HTTP_PROXY
+if ! [ -z "$PROXY" ]; then
+    export $PROXY
 fi
 
 # setting build type
@@ -58,9 +58,6 @@ TIMEZONE=${3:-Europe/Rome}
 KEYMAP=${4:-it}
 VARIANT=${5:-${LOCALE}}
 DATEFMT='%F_%H.%M'
-if [[ ! -z "$http_proxy" ]] ; then
-    export $http_proxy
-fi
 HEAD=""
 imgname=""
 
@@ -104,12 +101,12 @@ if [ "$BUILD_TYPE" == "ram" ]; then
     workdir=$(mktemp -d /tmp/build_$(basename $BASEDIR).XXXXX)
     mount -t tmpfs -o "noatime,size=${TMPFS_SIZE}",mode=0770 tmpfs "$workdir"
 else
+    mkdir -p /build
     avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
     if [ "$avail_mega" -lt 5000 ]; then
         echo "Too few disk space: $avail_mega MB, aborting" >&2
         exit 5
     fi
-    mkdir -p /build
     workdir=$(mktemp -d /build/build_$(basename $BASEDIR).XXXXX)
 fi
 
