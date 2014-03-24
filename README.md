@@ -46,3 +46,5 @@ A freepto.box is already available from http://dev.freepto.mx/vagrant/ but if yo
 <code>$ cd packer</code>
 
 <code>$ packer build freepto.json</code>
+
+<code>$ vagrant box add builds/virtualbox/freepto.box --name freepto --force</code>

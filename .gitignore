@@ -1,3 +1,4 @@
 .vagrant
 packer/packer_cache
 *.box
+freepto-lb
