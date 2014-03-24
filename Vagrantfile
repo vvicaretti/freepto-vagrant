@@ -22,6 +22,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "freepto"
   config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto.box"
 
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
+  config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","#{ENV['HOME']}/.vagrant.d/insecure_private_key"]
+  config.vm.provision "shell", inline: <<-SCRIPT
+    printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" > /home/vagrant/.ssh/authorized_keys
+    chown -R vagrant:vagrant /home/vagrant/.ssh
+  SCRIPT
+
   config.vm.provider "virtualbox" do |vb|
     # if BUILD_TYPE is ram, you should be set the ram size
     # to 6656 (1024 * 6 + 512)
