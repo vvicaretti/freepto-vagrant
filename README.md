@@ -41,9 +41,9 @@ Easy way for create a Freepto development environment
 
 <code>$ vagrant up --provider=libvirt</code>
 
-## Creating a new custom freepto.box
+## Creating a new custom virtualbox image
 
-A freepto.box is already available from http://dev.freepto.mx/vagrant/ but if you want create a custom base box, you should follow these steps:
+A freepto.box for VirtualBox is already available from http://dev.freepto.mx/vagrant/ but if you want create a custom VirtualBox image, you should follow these steps:
 
 1. install packer: http://www.packer.io
 
@@ -53,6 +53,16 @@ A freepto.box is already available from http://dev.freepto.mx/vagrant/ but if yo
 
 <code>$ cd packer</code>
 
-<code>$ packer build freepto.json</code>
+<code>$ packer build --only=freepto-vbox freepto.json</code>
 
 <code>$ vagrant box add builds/virtualbox/freepto.box --name freepto --force</code>
+
+## Creating a new custom libvirt image
+
+A freepto.box for libvirt is already available from http://dev.freepto.mx/vagrant/ but if you want create a custom libvirt image, you should follow these steps:
+
+<code>$ packer build -only=freepto-qemu freepto.json</code>
+
+<code>$ ./raw2box.sh</code>
+
+<code>$ vagrant box add builds/libvirt/freepto.box --name freepto --force</code>
