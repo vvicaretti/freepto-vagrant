@@ -4,7 +4,45 @@
   },
   "builders": [
     {
+      "type": "qemu",
+      "name": "freepto-qemu",
+      "vm_name": "freepto-dev",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-7/preseed.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=freepto.mx <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "accelerator": "kvm",
+      "disk_size": 20960,
+      "format": "qcow2",
+      "headless": false,
+      "http_directory": "http",
+      "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "qemuargs": [ [ "-m", "1024m" ] ],
+      "boot_wait": "10s"
+    },
+    {
       "type": "virtualbox-iso",
+      "name": "freepto-vbox",
       "boot_command": [
         "<esc><wait>",
         "install <wait>",
@@ -29,6 +67,7 @@
       "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
       "iso_checksum_type": "sha1",
       "iso_url": "{{user `mirror`}}/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso",
+      "headless": false,
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -39,7 +78,7 @@
       "vm_name": "freepto-dev",
       "output_directory": "packer-debian-7.4-amd64-virtualbox",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "384" ],
+        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
       ]
     }
@@ -47,6 +86,7 @@
   "post-processors": [
     {
       "type": "vagrant",
+      "only": ["freepto-vbox"],
       "output": "builds/{{.Provider}}/freepto.box"
     }
   ],
