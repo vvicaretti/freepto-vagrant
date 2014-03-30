@@ -87,7 +87,7 @@
     {
       "type": "vagrant",
       "only": ["freepto-vbox"],
-      "output": "builds/{{.Provider}}/freepto.box"
+      "output": "builds/{{.Provider}}/freepto-vbox.box"
     }
   ],
   "provisioners": [

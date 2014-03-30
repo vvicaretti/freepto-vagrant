@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.require_version ">= 1.3.5"
-
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -21,8 +19,11 @@ Vagrant.require_version ">= 1.3.5"
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
   config.vm.box = "freepto"
-  config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto.box"
+  config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
+# config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-qemu.box"
+
 
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
   config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","#{ENV['HOME']}/.vagrant.d/insecure_private_key"]
@@ -41,9 +42,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
   config.vm.provider :libvirt do |libvirt|
     libvirt.driver = "qemu"
-    libvirt.host = "localhost"
     libvirt.connect_via_ssh = false
-    libvirt.username = "root"
+    #libvirt.username = "root"
+    #libvirt.host="localhost"
     libvirt.storage_pool_name = "default"
   end
  config.vm.provision "shell", path: "provisioning/setup.sh"

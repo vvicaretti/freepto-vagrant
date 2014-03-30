@@ -6,7 +6,7 @@ BUILDS_DIR="builds/libvirt"
 
 echo "Starting image conversion..."
 
-#qemu-img convert -c -O qcow2 ${OUTPUT_DIR}/freepto-dev.qcow2 ${BUILDS_DIR}/box.img
+qemu-img convert -c -O qcow2 ${OUTPUT_DIR}/freepto-dev.qcow2 ${BUILDS_DIR}/box.img
 
 echo "Creating box file..."
 
