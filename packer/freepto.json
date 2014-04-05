@@ -5,7 +5,7 @@
   "builders": [
     {
       "type": "qemu",
-      "name": "freepto-qemu",
+      "name": "freepto-libvirt",
       "vm_name": "freepto-dev",
       "boot_command": [
         "<esc><wait>",
