@@ -1,7 +1,7 @@
 # Doc references
 # http://docs.vagrantup.com/v2/boxes/format.html
 
-OUTPUT_DIR="output-freepto-qemu/"
+OUTPUT_DIR="output-freepto-libvirt/"
 BUILDS_DIR="builds/libvirt"
 
 echo "Starting image conversion..."

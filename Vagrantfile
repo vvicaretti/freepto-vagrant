@@ -21,8 +21,8 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "freepto"
-  config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
-# config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-qemu.box"
+  #config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
+  config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-libvirt.box"
 
 
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
@@ -40,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--cpus", "1"]
     vb.gui = false
   end
-  config.vm.provider :libvirt do |libvirt|
+  config.vm.provider "libvirt" do |libvirt|
     libvirt.driver = "qemu"
     libvirt.connect_via_ssh = false
     #libvirt.username = "root"
