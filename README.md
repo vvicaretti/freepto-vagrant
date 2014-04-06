@@ -45,7 +45,7 @@ Install KVM, qemu and libvirt:
 *  https://wiki.debian.org/QEMU
 *  https://wiki.debian.org/libvirt
 
-<code>$ sudo apt-get install libxslt-dev libxml2-dev libvirt-dev rsync</code>
+<code>$ sudo apt-get install libxslt-dev libxml2-dev libvirt-dev</code>
 
 <code>$ vagrant plugin install vagrant-libvirt</code>
 
