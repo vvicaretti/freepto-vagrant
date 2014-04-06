@@ -6,3 +6,4 @@ output-freepto-libvirt/
 packer/builds/libvirt/Vagrantfile
 packer/builds/libvirt/box.img
 packer/builds/libvirt/metadata.json
+*sha512sum
