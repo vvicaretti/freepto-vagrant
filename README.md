@@ -49,6 +49,20 @@ Install KVM, qemu and libvirt:
 
 <code>$ vagrant plugin install vagrant-libvirt</code>
 
+Currently vagrant-libvirt support rsync as a default method for shared folder sync.
+However, with rsync is possible only an uni-directional sync (physical host -> virtual machine).
+In order to provide a bi-directional sync, the shared folder will be mounted with NFS.
+
+Unfortunately, some additional configurations are needed:
+
+<code>$ sudo apt-get install nfs-kernel-server nfs-common portmap</code>
+
+<code>$ sudo service nfs-common start</code>
+
+<code>$ sudo service nfs-kernel-server start</code>
+
+<code>$ sudo service rpcbind start</code>
+
 <code>$ vagrant up kvm --provider=libvirt</code>
 
 <code>$ vagrant ssh kvm</code>

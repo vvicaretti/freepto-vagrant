@@ -26,10 +26,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" > /home/vagrant/.ssh/authorized_keys
     chown -R vagrant:vagrant /home/vagrant/.ssh
   SCRIPT
-  
-  config.vm.synced_folder "sync/", "/vagrant"
 
   config.vm.define "vbox" do|vbox|
+    vbox.vm.synced_folder "sync/", "/vagrant"
     vbox.vm.box = "freepto-vbox"
     vbox.vm.box_url = "http://dev.freepto.mx/vagrant/virtualbox/freepto-vbox.box"
     vbox.vm.provider "virtualbox" do |vb|
@@ -44,6 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "kvm" do |kvm|
     kvm.vm.box = "freepto-libvirt"
     kvm.vm.box_url = "http://dev.freepto.mx/vagrant/libvirt/freepto-libvirt.box"
+    kvm.vm.synced_folder "sync/", "/vagrant", :nfs => true, :mount_options => ['rw', 'vers=3', 'tcp']
     kvm.vm.provider "libvirt" do |domain|
       # https://github.com/pradels/vagrant-libvirt
       domain.disk_bus = 'ide'
