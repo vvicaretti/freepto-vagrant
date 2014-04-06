@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "vbox" do|vbox|
     vbox.vm.box = "freepto-vbox"
-    vbox.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
+    vbox.vm.box_url = "http://dev.freepto.mx/vagrant/virtualbox/freepto-vbox.box"
     vbox.vm.provider "virtualbox" do |vb|
     # if BUILD_TYPE is ram, you should be set the ram size
     # to 6656 (1024 * 6 + 512)
@@ -41,7 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
   config.vm.define "kvm" do |kvm|
     kvm.vm.box = "freepto-libvirt"
-    kvm.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-libvirt.box"
+    kvm.vm.box_url = "http://dev.freepto.mx/vagrant/libvirt/freepto-libvirt.box"
     kvm.vm.provider "libvirt" do |domain|
       # https://github.com/pradels/vagrant-libvirt
       domain.disk_bus = 'ide'
