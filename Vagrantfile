@@ -20,11 +20,6 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "freepto"
-  #config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
-  config.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-libvirt.box"
-
-
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
   config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","#{ENV['HOME']}/.vagrant.d/insecure_private_key"]
   config.vm.provision "shell", inline: <<-SCRIPT
@@ -32,20 +27,37 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chown -R vagrant:vagrant /home/vagrant/.ssh
   SCRIPT
 
-  config.vm.provider "virtualbox" do |vb|
+  config.vm.define "vbox" do|vbox|
+    vbox.vm.box = "freepto-vbox"
+    vbox.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-vbox.box"
+    vbox.vm.provider "virtualbox" do |vb|
     # if BUILD_TYPE is ram, you should be set the ram size
     # to 6656 (1024 * 6 + 512)
     # vb.customize ["modifyvm", :id, "--memory", "6656"]
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
-    vb.customize ["modifyvm", :id, "--cpus", "1"]
-    vb.gui = false
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
+      vb.customize ["modifyvm", :id, "--cpus", "1"]
+      vb.gui = false
+    end
   end
-  config.vm.provider "libvirt" do |libvirt|
-    libvirt.driver = "qemu"
-    libvirt.connect_via_ssh = false
-    #libvirt.username = "root"
-    #libvirt.host="localhost"
-    libvirt.storage_pool_name = "default"
+  config.vm.define "kvm" do |kvm|
+    kvm.vm.box = "freepto-libvirt"
+    kvm.vm.box_url = "http://dev.freepto.mx/vagrant/freepto-libvirt.box"
+    kvm.vm.provider "libvirt" do |domain|
+      # https://github.com/pradels/vagrant-libvirt
+      domain.disk_bus = 'ide'
+      # if BUILD_TYPE is ram, you should be set the ram size
+      # to 6656 (1024 * 6 + 512)
+      # domain.memory = 6656
+      domain.memory = 2048
+      domain.cpus = 1
+      # https://github.com/torvalds/linux/blob/master/Documentation/virtual/kvm/nested-vmx.txt
+      domain.nested = false
+      # Controls the cache mechanism. Possible values are "default", "none", "writethrough", "writeback", "directsync" and "unsafe"
+      # http://libvirt.org/formatdomain.html#elementsDisks
+      domain.volume_cache = 'none'
+      # Arguments passed on to the guest kernel initramfs or initrd to use (Equivalent to qemu -append)
+      # domain.cmd_line = 
+    end
   end
  config.vm.provision "shell", path: "provisioning/setup.sh"
 end
