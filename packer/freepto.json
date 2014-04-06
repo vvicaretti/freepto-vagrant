@@ -25,7 +25,7 @@
         "<enter><wait>"
       ],
       "accelerator": "kvm",
-      "disk_size": 20960,
+      "disk_size": 10960,
       "format": "qcow2",
       "headless": false,
       "http_directory": "http",
@@ -61,7 +61,7 @@
         "<enter><wait>"
       ],
       "boot_wait": "10s",
-      "disk_size": 20960,
+      "disk_size": 10960,
       "guest_os_type": "Debian_64",
       "http_directory": "http",
       "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
