@@ -26,6 +26,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" > /home/vagrant/.ssh/authorized_keys
     chown -R vagrant:vagrant /home/vagrant/.ssh
   SCRIPT
+  
+  config.vm.synced_folder "sync/", "/vagrant"
 
   config.vm.define "vbox" do|vbox|
     vbox.vm.box = "freepto-vbox"
@@ -59,5 +61,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # domain.cmd_line = 
     end
   end
- config.vm.provision "shell", path: "provisioning/setup.sh"
+ config.vm.provision "shell", path: "sync/provisioning/setup.sh"
 end
