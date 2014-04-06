@@ -10,7 +10,7 @@ Easy way for create a Freepto development environment
 
 Install Vagrant 1.5.1:
 
-   http://www.vagrantup.com/
+*  http://www.vagrantup.com/
 
 <code>$ sudo apt-get install git virtualbox</code>
 
@@ -18,7 +18,7 @@ Install Vagrant 1.5.1:
 
 <code>$ cd freepto-vagrant</code>
 
-<code>$ vagrant up vbox</code>
+<code>$ vagrant up vbox --provider=virtualbox</code>
 
 <code>$ vagrant ssh vbox</code>
 
@@ -41,9 +41,9 @@ Install Vagrant 1.5.1:
 
 Install KVM, qemu and libvirt:
 
-  https://wiki.debian.org/KVM
-  https://wiki.debian.org/QEMU
-  https://wiki.debian.org/libvirt
+*  https://wiki.debian.org/KVM
+*  https://wiki.debian.org/QEMU
+*  https://wiki.debian.org/libvirt
 
 <code>$ sudo apt-get install libxslt-dev libxml2-dev libvirt-dev rsync</code>
 
@@ -57,11 +57,13 @@ Install KVM, qemu and libvirt:
 
 A box for VirtualBox is already available from http://dev.freepto.mx/vagrant/ but if you want create a custom VirtualBox image, you should follow these steps:
 
-1. install packer: http://www.packer.io
+1. Install packer: 
 
-2. customize provisioning scripts
+*  http://www.packer.io
 
-3. build a new freepto-vbox.box
+2. Customize provisioning scripts
+
+3. Build a new freepto-vbox.box
 
 <code>$ cd packer</code>
 
@@ -85,4 +87,4 @@ A box for libvirt is already available from http://dev.freepto.mx/vagrant/ but i
 
 <code>$ vagrant box list</code>
 
-<code>$ vagrant box repackage --output freepto-vbox.box ${boxname}</code>
+<code>$ vagrant box repackage --output freepto-${boxname}.box ${boxname}</code>
