@@ -38,13 +38,13 @@ if [ -r /etc/freeptobuild.cfg ]; then
     source $config
 else
     SHARE="/vagrant"
-    PROXY=""
+    export http_proxy=""
 fi
 
 ## Define apt-cacher-ng server
 
 if ! [ -z "$PROXY" ]; then
-    export $PROXY
+    export http_proxy=$PROXY
 fi
 
 ## Setting building type:
@@ -146,7 +146,7 @@ echo ""
 echo -e "${COL_YELL}================== FREEPTO BUILD INFO =====================${COL_RESET}"
 echo ""
 echo -e "${COL_GREEN}BUILD TYPE${COL_RESET}: $BUILD_TYPE"
-echo -e "${COL_GREEN}HTTP PROXY${COL_RESET}: $HTTP_PROXY"
+echo -e "${COL_GREEN}HTTP PROXY${COL_RESET}: $PROXY"
 echo -e "${COL_GREEN}REPOSITORY${COL_RESET}: $BASEDIR"
 echo -e "${COL_GREEN}GIT HEAD${COL_RESET}: $HEAD"
 echo -e "${COL_GREEN}GIT DESCRIPTION${COL_RESET}: $imgdesc"
