@@ -36,6 +36,11 @@ Install Vagrant 1.5.1:
 
 <code>$ sudo freeptobuild /home/vagrant/freepto-lb_vinc3nt</code>
 
+#### Build with a diffrent localization:
+
+The default localization is italian, but is possible configure a different localization:
+
+<code>$ sudo freeptobuild /home/vagrant/freepto-lb en_GB.UTF-8 Europe/London en</code>
 
 #### Add libvirt support:
 
