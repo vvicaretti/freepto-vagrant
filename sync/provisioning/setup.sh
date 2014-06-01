@@ -7,6 +7,7 @@ echo "==> freepto: installing custom configuration file..."
 install -o root -g root -m 644 /vagrant/provisioning/gitconfig /etc/gitconfig
 install -o root -g root -m 644 /vagrant/provisioning/zshrc.local /etc/zsh/zshrc.local
 install -o root -g root -m 644 /vagrant/provisioning/zshrc /etc/zsh/zshrc
+chsh -s /usr/bin/zsh root
 
 echo "==> freepto: cloning AvANa git repository..."
 git clone https://github.com/AvANa-BBS/freepto-lb /home/vagrant/freepto-lb
