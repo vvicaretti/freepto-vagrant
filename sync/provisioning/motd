@@ -1,0 +1,12 @@
+
+Freepto Development VM
+
+	user: vagrant
+	pass: vagrant
+
+Quick start:
+	
+	$ sudo vim /etc/freeptobuild.conf
+
+	$ sudo freeptobuild /home/vagrant/freepto-lb
+
