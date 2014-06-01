@@ -96,7 +96,7 @@ A box for libvirt is already available from http://dev.freepto.mx/vagrant/ but i
 
 <code>$ cd packer</code>
 
-<code>$ packer build -only=freepto-qemu freepto.json</code>
+<code>$ packer build --only=freepto-libvirt freepto.json</code>
 
 <code>$ ./raw2box.sh</code>
 
