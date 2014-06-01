@@ -13,15 +13,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+## Define colors:
+
+COL_RESET="\e[0m"
+COL_RED="\e[0;31m"
+COL_GREEN="\e[0;32m"
+COL_YELL="\e[0;33m"
+
+## Identify usable ram:
+
 usable_ram() {
     free -m | awk '/cache:/ { print $4 }'
 }
 
 if [ "$(id -u)" != "0" ]; then
-    echo "Only root can do that!"
+    echo "[-] Only root can do that!"
 fi
 
-# load configuration file
+## Load configuration file
+
 if [ -r /etc/freeptobuild.cfg ]; then
     config="/etc/freeptobuild.cfg"
     source $config
@@ -30,16 +41,18 @@ else
     PROXY=""
 fi
 
-# apt-cacher-ng
+## Define apt-cacher-ng server
+
 if ! [ -z "$PROXY" ]; then
     export $PROXY
 fi
 
-# setting build type
+## Setting building type:
+
 if [ "$RAM_BUILD" == "yes" ]; then
     # check ram available
     if [ "$(usable_ram)" -lt "$TMPFS_SIZE" ]; then
-        echo "Not enough RAM for create a tmpfs workdir. Forcing building on disk"
+        echo "[!] Not enough RAM for create a tmpfs workdir. Forcing building on disk"
         BUILD_TYPE="disk"
     else
         BUILD_TYPE="ram"
@@ -51,6 +64,7 @@ else
     BUILD_TYPE="disk"
 fi
 
+# Define variable:
 
 BASEDIR=${1%/} #strip slash
 LOCALE=${2:-it_IT.UTF-8}
@@ -62,11 +76,11 @@ HEAD=""
 imgname=""
 
 if [[ $# -lt 1 ]]; then
-	echo "You must fill config\n $0 path locale timezone keymap"
+	echo "[!] You must fill config\n $0 path locale timezone keymap"
 	exit 1
 fi
 if ! [[ -d $1/.git ]]; then
-	echo "Repository does not exist, create it manually"
+	echo "[!] Repository does not exist, create it manually"
 	exit 1
 fi
 
@@ -83,19 +97,16 @@ imgdesc="${builddate}_$commitdesc-$VARIANT"
 imgname="${SHARE%/}/$(basename $BASEDIR)/${imgdesc}/${imgdesc}.img"
 
 mkdir -p "${SHARE%/}/$(basename $BASEDIR)/${imgdesc}"
-echo "Target name will be $imgname"
 
 if [[ -n "$(find ${SHARE%/}/ -name "*_$HEAD-$VARIANT.img" -print -quit)" ]]; then
-	echo "an image for $HEAD already exists: "
+	echo "[-] The img file already exists: "
 	ls -l ${SHARE%/}/*_$HEAD-$VARIANT.img
 	exit 1
-else
-	echo "ok, building $HEAD"
 fi
 
 set -e
 
-### create workdir related with build type
+## Create workdir
 
 if [ "$BUILD_TYPE" == "ram" ]; then
     workdir=$(mktemp -d /tmp/build_$(basename $BASEDIR).XXXXX)
@@ -104,55 +115,86 @@ else
     mkdir -p /build
     avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
     if [ "$avail_mega" -lt 5000 ]; then
-        echo "Too few disk space: $avail_mega MB, aborting" >&2
+        echo "[!] Too few disk space: $avail_mega MB, aborting" >&2
         exit 5
     fi
     workdir=$(mktemp -d /build/build_$(basename $BASEDIR).XXXXX)
 fi
 
-### clone freepto repository in $workdir
+## Clone freepto repository in $workdir
+
 rsync -r --links --exclude=.git $BASEDIR/ $workdir/
 
-### define cleanup function
+## Define cleanup 
+
 cleanup()
 {
 	troubledir="/var/build/trouble"
 	mkdir -p "$troubledir"
 	if [ -d "$workdir" ]
 	then
-		echo "Something unexpected happened; you can find everything in $troubledir "
+		echo "[!] Something unexpected happened; you can find everything in $troubledir "
 		mv $workdir "$troubledir"
 		echo "Debug build in $troubledir/$(basename $workdir)"
 	fi
 }
 trap cleanup EXIT
 
+## Print build info:
+
+echo ""
+echo -e "${COL_YELL}================== FREEPTO BUILD INFO =====================${COL_RESET}"
+echo ""
+echo -e "${COL_GREEN}BUILD TYPE${COL_RESET}: $BUILD_TYPE"
+echo -e "${COL_GREEN}HTTP PROXY${COL_RESET}: $HTTP_PROXY"
+echo -e "${COL_GREEN}REPOSITORY${COL_RESET}: $BASEDIR"
+echo -e "${COL_GREEN}GIT HEAD${COL_RESET}: $HEAD"
+echo -e "${COL_GREEN}GIT DESCRIPTION${COL_RESET}: $imgdesc"
+echo -e "${COL_GREEN}IMAGE NAME${COL_RESET}: $imgname"
+echo ""
+echo -e "${COL_YELL}===========================================================${COL_RESET}"
+echo ""
+
+## Confirm settings:
+
+read -r -p "Do you want to continue? [Y/n]" response
+case $response in
+    [Nn])
+        trap EXIT 
+        exit 0
+        ;;
+esac
+
 ### {{{ LIVE-BUILD SECTION
 
+clear
 cd $workdir/
-lb clean
+lb clean > /dev/null
 
 mkdir -p /var/log/freeptobuild
+
 if ! ./freepto-config.sh -l $LOCALE -z $TIMEZONE -k $KEYMAP 2>&1 | tee -a /var/log/freeptobuild/$(basename $BASEDIR).log; then
-	echo "configuration error"
+	echo "[-] ERROR: during lb configuration"
 	cd ~
 	exit 2
 fi
 
 if ! lb build 2>&1 | tee -a /var/log/freeptobuild/$(basename $BASEDIR).log; then
-	echo "build error"
+	echo "[-] ERROR: during building"
 	cd ~
 	exit 3
 fi
 
 if ! [ -f binary.img ];
 then
-	echo "binary not found"
+	echo "[-] ERROR: img not found"
 	cd ~
 	exit 4
 fi
 
 ### }}}
+
+## Post build process:
 
 mv binary.img ${imgname}
 mv build.log ${imgname}.log.txt
@@ -163,10 +205,9 @@ git log -n 20 --decorate=short --stat > ${imgname}.history.txt
 
 cd ~
 
+## Remove old images on $SHARE and remove $workdir directory:
 
-# remove old image on $SHARE and remove $workdir directory:
 find ${SHARE}/ -type f -name "$(basename $BASEDIR)-*" -mtime +3 -delete
-#find ${workdir}/build* -type f -mtime +1 -delete
 rm -rf $workdir
 
 # vim: set ft=sh:

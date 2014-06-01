@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vbox.vm.box = "freepto-vbox"
     vbox.vm.box_url = "http://dev.freepto.mx/vagrant/virtualbox/freepto-vbox.box"
     vbox.vm.provider "virtualbox" do |vb|
-    # if BUILD_TYPE is ram, you should be set the ram size
+    # if BUILD_TYPE is ram, the ram size should be set
     # to 6656 (1024 * 6 + 512)
     # vb.customize ["modifyvm", :id, "--memory", "6656"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     kvm.vm.provider "libvirt" do |domain|
       # https://github.com/pradels/vagrant-libvirt
       domain.disk_bus = 'ide'
-      # if BUILD_TYPE is ram, you should be set the ram size
+      # if BUILD_TYPE is ram, the ram size should be set
       # to 6656 (1024 * 6 + 512)
       # domain.memory = 6656
       domain.memory = 2048
