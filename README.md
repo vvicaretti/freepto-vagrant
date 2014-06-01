@@ -102,3 +102,24 @@ A box for libvirt is already available from http://dev.freepto.mx/vagrant/ but i
 <code>$ vagrant box list</code>
 
 <code>$ vagrant box repackage --output freepto-${boxname}.box ${boxname}</code>
+
+
+## NOTE:
+
+Tested with the following software relases:
+
+<code>$ vboxmanage --version</code>
+
+4.3.10_Debianr93012
+
+<code>$ vagrant -v</code>
+
+Vagrant 1.6.2
+
+<code>$ vagrant plugin list | grep vagrant-libvirt</code>
+
+vagrant-libvirt (0.0.16)
+
+<code>$ cat /etc/debian_version</code>
+
+jessie/sid
