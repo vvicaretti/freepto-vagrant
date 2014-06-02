@@ -36,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # to 6656 (1024 * 6 + 512)
     # vb.customize ["modifyvm", :id, "--memory", "6656"]
       vb.customize ["modifyvm", :id, "--memory", "2048"]
-      vb.customize ["modifyvm", :id, "--cpus", "1"]
+      vb.customize ["modifyvm", :id, "--cpus", "2"]
       vb.gui = false
     end
   end
@@ -51,7 +51,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # to 6656 (1024 * 6 + 512)
       # domain.memory = 6656
       domain.memory = 2048
-      domain.cpus = 1
+      domain.cpus = 2
       # https://github.com/torvalds/linux/blob/master/Documentation/virtual/kvm/nested-vmx.txt
       domain.nested = false
       # Controls the cache mechanism. Possible values are "default", "none", "writethrough", "writeback", "directsync" and "unsafe"
