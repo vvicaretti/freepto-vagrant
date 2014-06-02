@@ -1,12 +1,13 @@
 
-Freepto Development VM
-
-	user: vagrant
-	pass: vagrant
-
-Quick start:
-	
-	$ sudo vim /etc/freeptobuild.conf
-
-	$ sudo freeptobuild /home/vagrant/freepto-lb
+############### Freepto Development VM #############
+#                                                  #
+#   user: vagrant                                  #
+#   pass: vagrant                                  #
+#                                                  #
+#   Quick start:                                   #
+#                                                  #
+#   $ sudo vim /etc/freeptobuild.cfg               #
+#   $ sudo freeptobuild /home/vagrant/freepto-lb   #
+#                                                  #
+####################################################
 
