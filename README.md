@@ -8,9 +8,10 @@ Easy way for create a Freepto development environment
 
 #### Vagrant setup:
 
-Install Vagrant 1.5.1:
+Install Vagrant 1.6.2:
 
 *  http://www.vagrantup.com/
+*  http://dev.freepto.mx/vagrant/utils/
 
 <code>$ sudo apt-get install git virtualbox</code>
 
