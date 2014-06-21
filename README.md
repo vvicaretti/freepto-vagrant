@@ -112,14 +112,15 @@ A box for libvirt is already available from http://dev.freepto.mx/vagrant/ but i
 
 <code>$ ./raw2box.sh</code>
 
-<code>$ vagrant box add builds/libvirt/freepto-libvirt.box --name freepto --force</code>
+<code>$ vagrant box add builds/libvirt/freepto-libvirt.box --name freepto-libvirt --force</code>
 
 ## Update an existing vagrant box
 
-<code>$ vagrant box list</code>
+<code>$ vagrant status</code>
 
-<code>$ vagrant box repackage --output freepto-${boxname}.box ${boxname}</code>
+<code>$ vagrant box package --output ${boxname} ${boxname}.box</code>
 
+<code>$ vagrant box add ${boxname}.box --name ${boxname} --force</code>
 
 ## NOTE:
 
