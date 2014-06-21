@@ -1,7 +1,7 @@
 Freepto-vagrant
 ===============
 
-Easy way for create a Freepto development environment
+Easy way to create a Freepto development environment
 
 
 ## Usage
@@ -13,11 +13,20 @@ Install Vagrant 1.6.2:
 *  http://www.vagrantup.com/
 *  http://dev.freepto.mx/vagrant/utils/
 
+Install Virtualbox:
+
 <code>$ sudo apt-get install git virtualbox</code>
 
 <code>$ git clone https://github.com/vinc3nt/freepto-vagrant.git</code>
 
 <code>$ cd freepto-vagrant</code>
+
+If the physical host have enough memory, the Vagrantfile should be modified in order to speedup the building process using the ramdisk.
+The ram size (by default 2048) should be set to 6656 (1024 * 6 + 512). If your host doesn’t have enough memory, you can ignore the next two steps.
+
+<code>$ vim Vagrantfile</code>
+
+<code>$ vagrant reload</code>
 
 <code>$ vagrant up vbox --provider=virtualbox</code>
 
@@ -25,6 +34,8 @@ Install Vagrant 1.6.2:
 
 
 #### Build Freepto:
+
+In order to change the building type (RAM or DISK) you should modify the freeptobuild configuration file.
 
 <code>$ sudo vim /etc/freeptobuild.cfg</code>
 
