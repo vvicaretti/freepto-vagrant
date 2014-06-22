@@ -26,7 +26,7 @@ Options:
 
 Example:
 
-    ./debmirror.sh -r http.debian.net -d wheezy,wheezy-udpate,jessie -a i386,amd64 -p /var/www/mirror
+    ./debmirror.sh -r ftp.ie.debian.org -d wheezy,wheezy-udpate,wheezy-backports,jessie -a i386,amd64 -p /var/www/mirror
 
 EOF
 }
@@ -37,8 +37,8 @@ if [ $# -eq 0 ]; then
     exit 1
 else
     # Default value
-    host=http.debian.net;
-    dist=wheezy,wheezy-updates,jessie;
+    host=ftp.ie.debian.org;
+    dist=wheezy,wheezy-updates,wheezy-backports,jessie;
     arch=i386,amd64;
     multimedia=y;
     security=y;
@@ -78,8 +78,8 @@ isinstalled=$?
 if [ $isinstalled == '0' ]; then
     echo "[+] debmirror installed"
 else
-    echo "[-] Debmirror not installed"
-    sudo apt-get install -y debmirror
+    echo "[-] debmirror not installed"
+    exit 1
 fi
 
 
@@ -87,7 +87,7 @@ logger -t debmirror[$$] updating Debian mirror
 
 debmirror \
 --i18n \
---method=http \
+--method=rsync \
 --progress \
 --host=$host \
 $dest/debian \
@@ -102,7 +102,6 @@ $dest/debian \
 --dist=$dist \
 --nosource \
 --ignore-small-errors \
---root=/debian \
 
 # Debian Security
 
@@ -111,7 +110,7 @@ if [ "$security" == "y" ]; then
 
     debmirror \
        --i18n \
-       --method=http \
+       --method=rsync \
        --progress \
        --host=$host \
        $dest/debian-security/ \
@@ -141,10 +140,10 @@ if [ "$multimedia" == "y" ]; then
         --ignore-small-errors \
         --ignore-release-gpg \
         --diff=none \
-        --dist=stable \
+        --dist=stable,testing,stable-backports \
         --arch=$arch \
-        --root=/ \
         --method=http \
+        --root=/ \
         --section=main,non-free \
         --nosource \
         --postcleanup \
