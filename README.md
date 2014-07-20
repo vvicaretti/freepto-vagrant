@@ -64,6 +64,8 @@ Install KVM, qemu and libvirt:
 
 <code>$ sudo apt-get install libxslt-dev libxml2-dev libvirt-dev</code>
 
+vagrant-libvirt is not packaged in Debian yet ([RFP](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=753012) request), therefore you need to install it through the vagrant plugin manager.
+
 <code>$ vagrant plugin install vagrant-libvirt</code>
 
 Currently vagrant-libvirt support rsync as a default method for shared folder sync.
