@@ -17,4 +17,7 @@ chsh -s /usr/bin/zsh root
 echo "==> freepto: cloning AvANa git repository..."
 git clone https://github.com/AvANa-BBS/freepto-lb /home/vagrant/freepto-lb
 
+# install extras: required for build_with_presistence
+apt-get install kpartx
+
 echo "freepto-dev is ready"
