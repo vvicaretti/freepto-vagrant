@@ -110,7 +110,7 @@ set -e
 
 if [ "$BUILD_TYPE" == "ram" ]; then
     workdir=$(mktemp -d /tmp/build_$(basename $BASEDIR).XXXXX)
-    mount -t tmpfs -o "noatime,size=${TMPFS_SIZE}",mode=0770 tmpfs "$workdir"
+    mount -t tmpfs -o "noatime,size=${TMPFS_SIZE}m,mode=0770" tmpfs "$workdir"
 else
     mkdir -p /build
     avail_mega=$(df -BM /build | awk '{ print $4 }' | tail -n1 | sed 's/[^0-9]//g')
