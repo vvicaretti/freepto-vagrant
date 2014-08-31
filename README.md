@@ -94,9 +94,13 @@ A box for VirtualBox is already available from http://dev.freepto.mx/vagrant/ bu
 
 *  http://www.packer.io
 
-2. Customize provisioning scripts
+2. Install virtualbox-guest-additions-iso
 
-3. Build a new freepto-vbox.box
+<code>$ sudo apt-get install virtualbox-guest-additions-iso</code>
+
+3. Customize provisioning scripts
+
+4. Build a new freepto-vbox.box
 
 <code>$ cd packer</code>
 
