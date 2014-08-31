@@ -1,48 +1,7 @@
 {
-  "variables": {
-    "mirror": "http://cdimage.debian.org/debian-cd"
-  },
   "builders": [
     {
-      "type": "qemu",
-      "name": "freepto-libvirt",
-      "vm_name": "freepto-dev",
-      "boot_command": [
-        "<esc><wait>",
-        "install <wait>",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-7/preseed.cfg <wait>",
-        "debian-installer=en_US <wait>",
-        "auto <wait>",
-        "locale=en_US <wait>",
-        "kbd-chooser/method=us <wait>",
-        "keyboard-configuration/xkb-keymap=us <wait>",
-        "netcfg/get_hostname={{ .Name }} <wait>",
-        "netcfg/get_domain=freepto.mx <wait>",
-        "fb=false <wait>",
-        "debconf/frontend=noninteractive <wait>",
-        "console-setup/ask_detect=false <wait>",
-        "console-keymaps-at/keymap=us <wait>",
-        "<enter><wait>"
-      ],
       "accelerator": "kvm",
-      "disk_size": 10960,
-      "format": "qcow2",
-      "headless": false,
-      "http_directory": "http",
-      "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
-      "iso_checksum_type": "sha1",
-      "iso_url": "{{user `mirror`}}/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso",
-      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_username": "vagrant",
-      "ssh_wait_timeout": "10000s",
-      "qemuargs": [ [ "-m", "1024m" ] ],
-      "boot_wait": "10s"
-    },
-    {
-      "type": "virtualbox-iso",
-      "name": "freepto-vbox",
       "boot_command": [
         "<esc><wait>",
         "install <wait>",
@@ -62,32 +21,87 @@
       ],
       "boot_wait": "10s",
       "disk_size": 10960,
-      "guest_os_type": "Debian_64",
+      "format": "qcow2",
+      "headless": false,
       "http_directory": "http",
       "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
       "iso_checksum_type": "sha1",
       "iso_url": "{{user `mirror`}}/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso",
-      "headless": false,
-      "ssh_username": "vagrant",
+      "name": "freepto-libvirt",
+      "qemuargs": [
+        [
+          "-m",
+          "1024m"
+        ]
+      ],
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
       "ssh_password": "vagrant",
       "ssh_port": 22,
+      "ssh_username": "vagrant",
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
+      "type": "qemu",
+      "vm_name": "freepto-dev"
+    },
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-7/preseed.cfg <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=freepto.mx <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": 10960,
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
-      "vm_name": "freepto-dev",
+      "guest_os_type": "Debian_64",
+      "headless": false,
+      "http_directory": "http",
+      "iso_checksum": "d68c40dfdca601f912c0f1ae991cdb439d1c572e",
+      "iso_checksum_type": "sha1",
+      "iso_url": "{{user `mirror`}}/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-CD-1.iso",
+      "name": "freepto-vbox",
       "output_directory": "packer-debian-7.4-amd64-virtualbox",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
-      ]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "512"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "1"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "freepto-dev"
     }
   ],
   "post-processors": [
     {
-      "type": "vagrant",
-      "only": ["freepto-vbox"],
-      "output": "builds/{{.Provider}}/freepto-vbox.box"
+      "only": [
+        "freepto-vbox"
+      ],
+      "output": "builds/{{.Provider}}/freepto-vbox.box",
+      "type": "vagrant"
     }
   ],
   "provisioners": [
@@ -107,5 +121,9 @@
       ],
       "type": "shell"
     }
-  ]
+  ],
+  "variables": {
+    "mirror": "http://cdimage.debian.org/debian-cd"
+  }
 }
+
