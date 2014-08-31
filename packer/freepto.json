@@ -31,7 +31,7 @@
       "qemuargs": [
         [
           "-m",
-          "1024m"
+          "1024"
         ]
       ],
       "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
