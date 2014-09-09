@@ -106,7 +106,7 @@ A box for VirtualBox is already available from http://dev.freepto.mx/vagrant/ bu
 
 <code>$ packer build --only=freepto-vbox freepto.json</code>
 
-<code>$ vagrant box add builds/virtualbox/freepto-vbox.box --name freepto --force</code>
+<code>$ vagrant box add builds/virtualbox/freepto-vbox.box --name freepto-vbox --force</code>
 
 ## Creating a new custom libvirt image
 
