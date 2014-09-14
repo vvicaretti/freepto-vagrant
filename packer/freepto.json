@@ -19,8 +19,8 @@
         "console-keymaps-at/keymap=us <wait>",
         "<enter><wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 10960,
+      "boot_wait": "5s",
+      "disk_size": 30720,
       "format": "qcow2",
       "headless": false,
       "http_directory": "http",
@@ -60,8 +60,8 @@
         "console-keymaps-at/keymap=us <wait>",
         "<enter><wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 10960,
+      "boot_wait": "5s",
+      "disk_size": 30720,
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "guest_os_type": "Debian_64",
       "headless": false,
@@ -114,7 +114,7 @@
         "scripts/debian/sudoers.sh",
         "scripts/common/vagrant.sh",
         "scripts/common/vmtools.sh",
-        "scripts/debian/freeptodevs-tools.sh",
+        "scripts/debian/puppet.sh",
         "scripts/debian/cleanup.sh",
         "scripts/common/minimize.sh",
         "scripts/workaround/vboxsf.sh"
