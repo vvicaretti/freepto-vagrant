@@ -1,0 +1,3 @@
+[submodule "freepto-buildtools"]
+	path = freepto-buildtools
+	url = git@github.com:vinc3nt/freepto-buildtools.git
