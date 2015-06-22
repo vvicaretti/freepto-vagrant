@@ -24,9 +24,9 @@
       "format": "qcow2",
       "headless": false,
       "http_directory": "http",
-      "iso_checksum": "5f611b40b0803f8be1180da561cfbc159e381599",
+      "iso_checksum": "22bae271a732333ebff150598292d9907d2c6001",
       "iso_checksum_type": "sha1",
-      "iso_url": "{{user `mirror`}}/7.8.0/amd64/iso-cd/debian-7.8.0-amd64-CD-1.iso",
+      "iso_url": "{{user `mirror`}}/8.1.0/amd64/iso-cd/debian-8.1.0-amd64-CD-1.iso",
       "name": "freepto-libvirt",
       "qemuargs": [
         [
@@ -46,7 +46,7 @@
       "boot_command": [
         "<esc><wait>",
         "install <wait>",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-7/preseed.cfg <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-8/preseed.cfg <wait>",
         "debian-installer=en_US <wait>",
         "auto <wait>",
         "locale=en_US <wait>",
@@ -66,11 +66,11 @@
       "guest_os_type": "Debian_64",
       "headless": false,
       "http_directory": "http",
-      "iso_checksum": "5f611b40b0803f8be1180da561cfbc159e381599",
+      "iso_checksum": "22bae271a732333ebff150598292d9907d2c6001",
       "iso_checksum_type": "sha1",
-      "iso_url": "{{user `mirror`}}/7.8.0/amd64/iso-cd/debian-7.8.0-amd64-CD-1.iso",
+      "iso_url": "{{user `mirror`}}/8.1.0/amd64/iso-cd/debian-8.1.0-amd64-CD-1.iso",
       "name": "freepto-vbox",
-      "output_directory": "packer-debian-7.8-amd64-virtualbox",
+      "output_directory": "packer-debian-jessie-amd64-virtualbox",
       "shutdown_command": "echo 'vagrant'|sudo -S /sbin/shutdown -hP now",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -82,13 +82,13 @@
           "modifyvm",
           "{{.Name}}",
           "--memory",
-          "512"
+          "1024"
         ],
         [
           "modifyvm",
           "{{.Name}}",
           "--cpus",
-          "1"
+          "2"
         ]
       ],
       "virtualbox_version_file": ".vbox_version",
@@ -114,7 +114,7 @@
         "scripts/debian/sudoers.sh",
         "scripts/common/vagrant.sh",
         "scripts/common/vmtools.sh",
-        "scripts/debian/puppet.sh",
+        "scripts/debian/freepto_tools.sh",
         "scripts/debian/cleanup.sh",
         "scripts/common/minimize.sh",
         "scripts/workaround/vboxsf.sh"

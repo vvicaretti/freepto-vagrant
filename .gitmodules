@@ -1,3 +1,6 @@
 [submodule "freepto-buildtools"]
 	path = freepto-buildtools
 	url = git@github.com:vinc3nt/freepto-buildtools.git
+[submodule "slack/freepto-slack"]
+	path = slack/freepto-slack
+	url = https://github.com/AvANa-BBS/freepto-slack
